@@ -12,5 +12,4 @@ public class BaseMathDTO {
     private float b;
     private String operator;
     private float result;
-
 }
