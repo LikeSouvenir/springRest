@@ -1,0 +1,10 @@
+-- CREATE DATABASE IF NOT EXISTS example;
+
+CREATE TABLE IF NOT EXISTS history (
+   id SERIAL PRIMARY KEY,
+   operator VARCHAR(20),
+   a FLOAT DEFAULT 0,
+   b FLOAT DEFAULT 0,
+   result FLOAT,
+   date DATE
+)
