@@ -10,6 +10,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductList {
+    private UUID id;
     private String marketName;
     private String marketAddress;
     private String productName;

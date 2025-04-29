@@ -23,7 +23,7 @@ public interface ProductsInMarketRepository extends JpaRepository<ProductsInMark
     ProductsInMarketEntity findByName(UUID market, UUID product);
 
     @Query(value = "select new com.example.demo.controllers.markets.product.dto.ProductList" +
-            "( m.name, m.address, p.name, p.category, p.articleInRegistry, pme.cost, pme.count) " +
+            "(pme.id, m.name, m.address, p.name, p.category, p.articleInRegistry, pme.cost, pme.count) " +
             "from ProductsInMarketEntity pme " +
             "join pme.market m " +
             "join pme.product p")

@@ -2,6 +2,7 @@ package com.example.demo.controllers.users.auth;
 
 import com.example.demo.controllers.users.auth.dto.SignInDTO;
 import com.example.demo.controllers.users.auth.dto.SignUpDTO;
+import com.example.demo.controllers.users.auth.dto.UserProfileDTO;
 import com.example.demo.core.users.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,14 +25,14 @@ public class AuthController {
     private UserService _userService;
 
     @PostMapping("/signIn")
-    public ResponseEntity<HashMap<String, Object>> signIn(@RequestBody SignInDTO body) {
+    public ResponseEntity<UserProfileDTO> signIn(@RequestBody SignInDTO body) {
         this.logger.info("signIn");
 
         if (!body.Validate()) {
             return ResponseEntity.badRequest().build();
         }
 
-        HashMap<String, Object> response = this._userService.SignIn(body);
+        UserProfileDTO response = this._userService.SignIn(body);
 
         if (response == null) {
             return ResponseEntity.badRequest().build();
@@ -41,7 +42,7 @@ public class AuthController {
     }
 
     @PostMapping("/signUp")
-    public ResponseEntity<HashMap<String, Object>> signUp(@RequestBody SignUpDTO body) {
+    public ResponseEntity<UserProfileDTO> signUp(@RequestBody SignUpDTO body) {
         this.logger.info("signUp");
 
         if (!body.Validate()) {

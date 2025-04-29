@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -49,6 +50,9 @@ public class ProductService {
     }
     public ProductsInMarketEntity findProductInMarketById(UUID market, UUID product) {
         return productsInMarketRepository.findByName(market, product);
+    }
+    public Optional<ProductsInMarketEntity> findById(UUID id) {
+        return productsInMarketRepository.findById(id);
     }
     //добавить товар в магазинах
     public ProductsInMarketEntity addProductInMarket(ProductsInMarketEntity product) {

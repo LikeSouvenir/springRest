@@ -2,6 +2,7 @@ package com.example.demo.core.users.user.service;
 
 import com.example.demo.controllers.users.auth.dto.SignInDTO;
 import com.example.demo.controllers.users.auth.dto.SignUpDTO;
+import com.example.demo.controllers.users.auth.dto.UserProfileDTO;
 import com.example.demo.core.users.profile.entity.ProfileEntity;
 import com.example.demo.core.users.profile.repository.ProfileRepository;
 import com.example.demo.core.users.user.entity.UserEntity;
@@ -10,7 +11,9 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -23,21 +26,22 @@ public class UserService {
         this._profileRepository = profileRepository;
     }
 
-    public HashMap<String, Object> SignIn(SignInDTO data) {
-        Optional<UserEntity> entity = this._userRepository.findByLogin(data.getLogin());
+    public UserProfileDTO SignIn(SignInDTO data) {
+        UserProfileDTO entity = this._userRepository.findByLogin(data.getLogin());
 
-        if (entity.isEmpty()) {
+        if (entity == null) {
             return null;
         }
 
-        if (!BCrypt.checkpw(data.getPassword(), entity.get().getPassword())) {
+        if (!BCrypt.checkpw(data.getPassword(), entity.getPassword())) {
             return null;
         }
+        entity.setPassword(null);
 
-        return _excludeSystemFields(entity.get());
+        return entity;
     }
 
-    public HashMap<String, Object> SignUp(SignUpDTO data) {
+    public UserProfileDTO SignUp(SignUpDTO data) {
         ProfileEntity profile = this._profileRepository.save(
                 new ProfileEntity(data.getName(), data.getAge())
         );
@@ -45,17 +49,26 @@ public class UserService {
         UserEntity user = this._userRepository.save(
                 new UserEntity(data.getLogin(), BCrypt.hashpw(data.getPassword(), BCrypt.gensalt(16)), profile)
         );
-        return _excludeSystemFields(user);
+        //    private UUID ProfileId;
+        //    private String name;
+        //    private Integer age;
+        //    private String login;
+        //    private String password;
+        return new UserProfileDTO(user.getProfile().getId(), data.getName(), data.getAge(), data.getLogin(), null);
+    }
+
+    public Optional<ProfileEntity> findById(UUID id) {
+        return this._profileRepository.findById(id);
     }
 
     // exclude other field //// exclude other field //// exclude other field //// exclude other field //
-    private HashMap<String, Object> _excludeSystemFields(UserEntity user) {
-        HashMap<String, Object> value = new HashMap<>();
-        value.put("login", user.getLogin());
-        value.put("profile_id", user.getId());
-        value.put("name", user.getProfile().getName());
-        value.put("age", user.getProfile().getAge());
-
-        return value;
-    }
+//    private HashMap<String, Object> _excludeSystemFields(UserEntity user) {
+//        HashMap<String, Object> value = new HashMap<>();
+//        value.put("login", user.getLogin());
+//        value.put("profile_id", user.getId());
+//        value.put("name", user.getProfile().getName());
+//        value.put("age", user.getProfile().getAge());
+//
+//        return value;
+//    }
 }
