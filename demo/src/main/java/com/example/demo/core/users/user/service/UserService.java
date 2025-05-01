@@ -6,7 +6,11 @@ import com.example.demo.controllers.users.auth.dto.UserProfileDTO;
 import com.example.demo.core.users.profile.entity.ProfileEntity;
 import com.example.demo.core.users.profile.repository.ProfileRepository;
 import com.example.demo.core.users.user.entity.UserEntity;
+import com.example.demo.core.users.user.projections.FullUserProjection;
 import com.example.demo.core.users.user.repository.UserRepository;
+import com.example.demo.libs.MathModule;
+import com.example.demo.utils.exceptions.ApplicationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
@@ -20,25 +24,41 @@ public class UserService {
 
     private final UserRepository _userRepository;
     private final ProfileRepository _profileRepository;
+    private final MathModule _mathModule;
 
-    public UserService(UserRepository userRepository, ProfileRepository profileRepository) {
+    public UserService(UserRepository userRepository, ProfileRepository profileRepository, MathModule mathModule) {
         this._userRepository = userRepository;
         this._profileRepository = profileRepository;
+
+        this._mathModule = mathModule;
     }
 
-    public UserProfileDTO SignIn(SignInDTO data) {
-        UserProfileDTO entity = this._userRepository.findByLogin(data.getLogin());
+//    public FullUserProjection SignIn(SignInDTO data) {
+//        FullUserProjection entity = this._userRepository.findByLogin(data.getLogin());
+//
+//        if (entity == null) {
+//            return null;
+//        }
+//
+//        if (!BCrypt.checkpw(data.getPassword(), entity.getPassword())) {
+//            return null;
+//        }
+//
+//        return entity;
+//    }
 
-        if (entity == null) {
-            return null;
+    public UserEntity SignIn(SignInDTO data) {
+        Optional<UserEntity> entity = this._userRepository.findByLogin(data.getLogin());
+
+        if (entity.isEmpty()) {
+            throw new ApplicationException(HttpStatus.BAD_REQUEST, "Incorrect login");
         }
 
-        if (!BCrypt.checkpw(data.getPassword(), entity.getPassword())) {
-            return null;
+        if (!BCrypt.checkpw(data.getPassword(), entity.get().getPassword())) {
+            throw new ApplicationException(HttpStatus.BAD_REQUEST, "Incorrect password");
         }
-        entity.setPassword(null);
 
-        return entity;
+        return entity.get();
     }
 
     public UserProfileDTO SignUp(SignUpDTO data) {
@@ -54,7 +74,7 @@ public class UserService {
         //    private Integer age;
         //    private String login;
         //    private String password;
-        return new UserProfileDTO(user.getProfile().getId(), data.getName(), data.getAge(), data.getLogin(), null);
+        return new UserProfileDTO(user.getProfile().getId(), data.getName(), data.getAge(), data.getLogin());
     }
 
     public Optional<ProfileEntity> findById(UUID id) {

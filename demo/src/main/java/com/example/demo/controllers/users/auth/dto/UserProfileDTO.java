@@ -1,9 +1,6 @@
 package com.example.demo.controllers.users.auth.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -11,11 +8,10 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
+@Builder
 public class UserProfileDTO {
-    private UUID ProfileId;
+    private UUID profileId;
     private String name;
     private Integer age;
     private String login;
-    private String password;
 }

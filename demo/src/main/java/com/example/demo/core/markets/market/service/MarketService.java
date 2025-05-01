@@ -15,7 +15,7 @@ import java.util.UUID;
 public class MarketService {
     private final MarketRepository marketRepository;
 
-    MarketService(MarketRepository marketRepository) {
+    public MarketService(MarketRepository marketRepository) {
         this.marketRepository = marketRepository;
     }
 
