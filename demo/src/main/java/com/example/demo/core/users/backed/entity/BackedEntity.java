@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -19,11 +20,13 @@ import java.util.List;
 @Table(name = "backed_entity")
 public class BackedEntity extends BaseEntity {
 
-    @OneToOne(cascade = CascadeType.MERGE)
+    @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "profile", referencedColumnName = "id")
     private ProfileEntity profile;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "products_in_market", referencedColumnName = "id")
-    private List<ProductsInMarketEntity> products_in_market;
+    private List<ProductsInMarketEntity> products_in_market = new ArrayList<>();
+
+    // кол-во добавить
 }

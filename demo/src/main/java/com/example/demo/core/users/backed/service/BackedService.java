@@ -8,6 +8,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -21,6 +22,12 @@ public class BackedService {
     // найти
     public List<ProductList> findByProfileId(UUID id) {
         return backedRepository.findByProfileId(id);
+    }
+    public BackedEntity findEntityByProfileId(UUID id) {
+        return backedRepository.findEntityByProfileId(id);
+    }
+    public Optional<BackedEntity> findById(UUID id) {
+        return backedRepository.findById(id);
     }
 
     public List<ProductList> findAllProducts() {

@@ -1,5 +1,6 @@
 package com.example.demo.controllers.markets.product.dto;
 
+import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
