@@ -1,4 +1,4 @@
-package com.example.demo.controllers.users.backed.dto;
+package com.example.demo.controllers.users.backet.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

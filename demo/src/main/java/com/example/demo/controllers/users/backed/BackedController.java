@@ -1,11 +1,11 @@
-package com.example.demo.controllers.users.backed;
+package com.example.demo.controllers.users.backet;
 
 import com.example.demo.controllers.markets.product.dto.ProductList;
-import com.example.demo.controllers.users.backed.dto.BackedDTO;
+import com.example.demo.controllers.users.backet.dto.backetDTO;
 import com.example.demo.core.markets.product.service.ProductService;
 import com.example.demo.core.markets.productsInMarket.entity.ProductsInMarketEntity;
-import com.example.demo.core.users.backed.entity.BackedEntity;
-import com.example.demo.core.users.backed.service.BackedService;
+import com.example.demo.core.users.backet.entity.backetEntity;
+import com.example.demo.core.users.backet.service.backetService;
 import com.example.demo.core.users.profile.entity.ProfileEntity;
 import com.example.demo.core.users.user.service.UserService;
 import org.slf4j.Logger;
@@ -20,37 +20,37 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1")
-public class BackedController {
+public class backetController {
 
-    private final Logger logger = LoggerFactory.getLogger(BackedController.class);
+    private final Logger logger = LoggerFactory.getLogger(backetController.class);
 
-    private final BackedService backedService;
+    private final backetService backetService;
     private final UserService userService;
     private final ProductService productService;
 
-    public BackedController(BackedService backedService, UserService userService, ProductService productService) {
-        this.backedService = backedService;
+    public backetController(backetService backetService, UserService userService, ProductService productService) {
+        this.backetService = backetService;
         this.userService = userService;
         this.productService = productService;
     }
 
-    @PostMapping("/backed/add") // не указывается кол-во
-    public ResponseEntity<BackedEntity> addProduct(@RequestBody BackedDTO backed) {
-        logger.info("backed add product");
+    @PostMapping("/backet/add") // не указывается кол-во
+    public ResponseEntity<backetEntity> addProduct(@RequestBody backetDTO backet) {
+        logger.info("backet add product");
 
-        if (!backed.Validate()) {
+        if (!backet.Validate()) {
             System.out.println("Ошибка валидации");
             return ResponseEntity.badRequest().body(null);
         }
         System.out.println("Validate пройден");
 
-        Optional<ProfileEntity> profile = this.userService.findById(backed.getProfile());
+        Optional<ProfileEntity> profile = this.userService.findById(backet.getProfile());
         if (profile.isEmpty()) {
             return ResponseEntity.badRequest().body(null);
         }
         System.out.println("profile пройден");
 
-        Optional<ProductsInMarketEntity> products_in_market = this.productService.findById(backed.getProducts_in_market());
+        Optional<ProductsInMarketEntity> products_in_market = this.productService.findById(backet.getProducts_in_market());
         if (products_in_market.isEmpty()) {
             System.out.println("Ошибка products_in_market.isEmpty()");
             return ResponseEntity.badRequest().body(null);
@@ -62,26 +62,26 @@ public class BackedController {
         pim.add(products_in_market.get());
         System.out.println("new ArrayList<>(); пройден");
 
-        this.backedService.addToBacked(new BackedEntity(profile.get(), pim));
+        this.backetService.addTobacket(new backetEntity(profile.get(), pim));
 
-        System.out.println("saveBackedEntity пройден");
+        System.out.println("savebacketEntity пройден");
         return ResponseEntity.ok().body(null);
     }
 
-    @GetMapping("/backed/get") // profileId
+    @GetMapping("/backet/get") // profileId
     public ResponseEntity<List<ProductList>> getProduct(@RequestParam UUID profileId) {
-        List<ProductList> result = this.backedService.findByProfileId(profileId);
+        List<ProductList> result = this.backetService.findByProfileId(profileId);
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/backed/getAll")
+    @GetMapping("/backet/getAll")
     public ResponseEntity<List<ProductList>> getAll() {
-        return ResponseEntity.ok(this.backedService.findAllProducts());
+        return ResponseEntity.ok(this.backetService.findAllProducts());
     }
 
-    @DeleteMapping("/backed/delete") // profile
+    @DeleteMapping("/backet/delete") // profile
     public ResponseEntity<?> deleteProduct(@RequestParam UUID profile) {
-        backedService.removeFromBacked(profile);
+        backetService.removeFrombacket(profile);
         return ResponseEntity.ok().body(null);
     }
 }

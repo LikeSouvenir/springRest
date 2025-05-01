@@ -1,9 +1,9 @@
-package com.example.demo.core.users.backed.service;
+package com.example.demo.core.users.backet.service;
 
 import com.example.demo.controllers.markets.product.dto.ProductList;
-import com.example.demo.controllers.users.backed.dto.BackedDTO;
-import com.example.demo.core.users.backed.entity.BackedEntity;
-import com.example.demo.core.users.backed.repository.BackedRepository;
+import com.example.demo.controllers.users.backet.dto.backetDTO;
+import com.example.demo.core.users.backet.entity.backetEntity;
+import com.example.demo.core.users.backet.repository.backetRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -12,36 +12,36 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class BackedService {
-    private final BackedRepository backedRepository;
+public class backetService {
+    private final backetRepository backetRepository;
 
-    public BackedService(BackedRepository backedRepository) {
-        this.backedRepository = backedRepository;
+    public backetService(backetRepository backetRepository) {
+        this.backetRepository = backetRepository;
     }
 
     // найти
     public List<ProductList> findByProfileId(UUID id) {
-        return backedRepository.findByProfileId(id);
+        return backetRepository.findByProfileId(id);
     }
-    public BackedEntity findEntityByProfileId(UUID id) {
-        return backedRepository.findEntityByProfileId(id);
+    public backetEntity findEntityByProfileId(UUID id) {
+        return backetRepository.findEntityByProfileId(id);
     }
-    public Optional<BackedEntity> findById(UUID id) {
-        return backedRepository.findById(id);
+    public Optional<backetEntity> findById(UUID id) {
+        return backetRepository.findById(id);
     }
 
     public List<ProductList> findAllProducts() {
-        return backedRepository.findAllProducts();
+        return backetRepository.findAllProducts();
     }
 
     // добавить
     @Transactional
-    public void addToBacked(BackedEntity backedEntity) {
-        backedRepository.save(backedEntity);
+    public void addTobacket(backetEntity backetEntity) {
+        backetRepository.save(backetEntity);
     }
     // удаление
     @Transactional
-    public void removeFromBacked(UUID id) {
-        backedRepository.deleteByProfileId(id);
+    public void removeFrombacket(UUID id) {
+        backetRepository.deleteByProfileId(id);
     }
 }
