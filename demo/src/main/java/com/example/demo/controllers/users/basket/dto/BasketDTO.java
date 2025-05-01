@@ -1,4 +1,4 @@
-package com.example.demo.controllers.users.backet.dto;
+package com.example.demo.controllers.users.basket.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class backetDTO {
+public class BasketDTO {
     private UUID profile;
     private UUID products_in_market;
 

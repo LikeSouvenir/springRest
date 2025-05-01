@@ -5,8 +5,8 @@ import com.example.demo.core.markets.productsInMarket.entity.ProductsInMarketEnt
 import com.example.demo.core.orders.order.entity.OrderEntity;
 import com.example.demo.core.orders.order.service.OrderService;
 import com.example.demo.core.orders.orderItem.entity.OrderItemEntity;
-import com.example.demo.core.users.backet.entity.backetEntity;
-import com.example.demo.core.users.backet.service.backetService;
+import com.example.demo.core.users.basket.entity.BasketEntity;
+import com.example.demo.core.users.basket.service.BasketService;
 import com.example.demo.core.users.profile.entity.ProfileEntity;
 import com.example.demo.core.users.user.service.UserService;
 import jakarta.transaction.Transactional;
@@ -26,12 +26,12 @@ public class OrderController {
     Logger logger = LoggerFactory.getLogger(OrderController.class);
 
     private final OrderService orderService;
-    private final backetService backetService;
+    private final BasketService basketService;
     private final UserService userService;
 
-    public OrderController(OrderService orderService, backetService backetService, UserService userService) {
+    public OrderController(OrderService orderService, BasketService basketService, UserService userService) {
         this.orderService = orderService;
-        this.backetService = backetService;
+        this.basketService = basketService;
         this.userService = userService;
     }
 
@@ -52,8 +52,8 @@ public class OrderController {
         }
 
         // подтягиваем корзину
-        backetEntity backet = this.backetService.findEntityByProfileId(orderDTO.getUserId());
-        if (backet == null || backet.getProducts_in_market().isEmpty()) {
+        BasketEntity basket = this.basketService.findEntityByProfileId(orderDTO.getUserId());
+        if (basket == null || basket.getProducts_in_market().isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 
@@ -65,7 +65,7 @@ public class OrderController {
         double totalPrice = 0;
 
 
-        for (ProductsInMarketEntity product : backet.getProducts_in_market()) {
+        for (ProductsInMarketEntity product : basket.getProducts_in_market()) {
 
             OrderItemEntity orderItem = new OrderItemEntity();
             orderItem.setOrder(order);
@@ -92,7 +92,7 @@ public class OrderController {
         this.orderService.createOrder(order);
 
         // удаляем товары из корзины - зануляем у магазина
-//        this.backetService.removeFrombacket(orderDTO.getUserId());
+//        this.BasketService.removeFrombacket(orderDTO.getUserId());
 //        System.out.println("orderEntity: removeProductInOrder");
 
         return ResponseEntity.ok().body(null);

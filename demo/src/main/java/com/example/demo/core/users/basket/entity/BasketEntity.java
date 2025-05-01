@@ -1,4 +1,4 @@
-package com.example.demo.core.users.backet.entity;
+package com.example.demo.core.users.basket.entity;
 
 import com.example.demo.core.markets.productsInMarket.entity.ProductsInMarketEntity;
 import com.example.demo.core.users.profile.entity.ProfileEntity;
@@ -17,8 +17,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "backet_entity")
-public class backetEntity extends BaseEntity {
+@Table(name = "basket_entity")
+public class BasketEntity extends BaseEntity {
 
     @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "profile", referencedColumnName = "id")

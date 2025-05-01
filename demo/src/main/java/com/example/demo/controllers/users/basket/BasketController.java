@@ -1,11 +1,11 @@
-package com.example.demo.controllers.users.backet;
+package com.example.demo.controllers.users.basket;
 
 import com.example.demo.controllers.markets.product.dto.ProductList;
-import com.example.demo.controllers.users.backet.dto.backetDTO;
+import com.example.demo.controllers.users.basket.dto.BasketDTO;
 import com.example.demo.core.markets.product.service.ProductService;
 import com.example.demo.core.markets.productsInMarket.entity.ProductsInMarketEntity;
-import com.example.demo.core.users.backet.entity.backetEntity;
-import com.example.demo.core.users.backet.service.backetService;
+import com.example.demo.core.users.basket.entity.BasketEntity;
+import com.example.demo.core.users.basket.service.BasketService;
 import com.example.demo.core.users.profile.entity.ProfileEntity;
 import com.example.demo.core.users.user.service.UserService;
 import org.slf4j.Logger;
@@ -20,22 +20,22 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1")
-public class backetController {
+public class BasketController {
 
-    private final Logger logger = LoggerFactory.getLogger(backetController.class);
+    private final Logger logger = LoggerFactory.getLogger(BasketController.class);
 
-    private final backetService backetService;
+    private final BasketService basketService;
     private final UserService userService;
     private final ProductService productService;
 
-    public backetController(backetService backetService, UserService userService, ProductService productService) {
-        this.backetService = backetService;
+    public BasketController(BasketService basketService, UserService userService, ProductService productService) {
+        this.basketService = basketService;
         this.userService = userService;
         this.productService = productService;
     }
 
     @PostMapping("/backet/add") // не указывается кол-во
-    public ResponseEntity<backetEntity> addProduct(@RequestBody backetDTO backet) {
+    public ResponseEntity<BasketEntity> addProduct(@RequestBody BasketDTO backet) {
         logger.info("backet add product");
 
         if (!backet.Validate()) {
@@ -62,7 +62,7 @@ public class backetController {
         pim.add(products_in_market.get());
         System.out.println("new ArrayList<>(); пройден");
 
-        this.backetService.addTobacket(new backetEntity(profile.get(), pim));
+        this.basketService.addTobacket(new BasketEntity(profile.get(), pim));
 
         System.out.println("savebacketEntity пройден");
         return ResponseEntity.ok().body(null);
@@ -70,18 +70,18 @@ public class backetController {
 
     @GetMapping("/backet/get") // profileId
     public ResponseEntity<List<ProductList>> getProduct(@RequestParam UUID profileId) {
-        List<ProductList> result = this.backetService.findByProfileId(profileId);
+        List<ProductList> result = this.basketService.findByProfileId(profileId);
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("/backet/getAll")
     public ResponseEntity<List<ProductList>> getAll() {
-        return ResponseEntity.ok(this.backetService.findAllProducts());
+        return ResponseEntity.ok(this.basketService.findAllProducts());
     }
 
     @DeleteMapping("/backet/delete") // profile
     public ResponseEntity<?> deleteProduct(@RequestParam UUID profile) {
-        backetService.removeFrombacket(profile);
+        basketService.removeFrombacket(profile);
         return ResponseEntity.ok().body(null);
     }
 }
