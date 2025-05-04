@@ -1,7 +1,7 @@
 package com.example.demo.controllers.order.dto;
 
-import com.example.demo.controllers.markets.product.dto.ProductList;
-import com.example.demo.core.users.profile.entity.ProfileEntity;
+import com.example.demo.controllers.product.dto.ProductList;
+import com.example.demo.core.profile.entity.ProfileEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
