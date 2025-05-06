@@ -1,10 +1,9 @@
 package com.example.demo.core.productsInMarket.repository;
 
 import com.example.demo.controllers.product.dto.FullProductListInfo;
-import com.example.demo.controllers.product.dto.ProductList;
-import com.example.demo.core.product.entity.ProductEntity;
 import com.example.demo.core.productsInMarket.entity.ProductsInMarketEntity;
 import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -21,7 +20,6 @@ public interface ProductsInMarketRepository extends JpaRepository<ProductsInMark
     void updateProduct(UUID Id, Integer count, Double cost);
 
 
-//    @Query(value = "select pm from ProductsInMarketEntity pm where pm.market = ?1 and pm.product = ?2")
     @Query("SELECT pm FROM ProductsInMarketEntity pm WHERE pm.market.id = ?1 AND pm.product.id = ?2")
     Optional<ProductsInMarketEntity> findByName(UUID market, UUID product);
 
@@ -34,4 +32,16 @@ public interface ProductsInMarketRepository extends JpaRepository<ProductsInMark
             join pme.product p
             """)
     List<FullProductListInfo> findAllProducts();
+
+    @EntityGraph(attributePaths = {"market", "product"})
+    @Query(value = """
+            SELECT pim FROM ProductsInMarketEntity pim
+                where pim.product.id = ?1
+                order by pim.currentCost DESC
+            """)
+    List<ProductsInMarketEntity> findByProductId(UUID productId);
+
+    @Modifying
+    @Query(value = "update ProductsInMarketEntity pim set pim.currentCount = ?2 where pim.id = ?1")
+    Integer updateCount(UUID productInMarketId, int newCount);
 }

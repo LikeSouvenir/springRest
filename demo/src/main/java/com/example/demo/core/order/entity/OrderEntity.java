@@ -5,27 +5,29 @@ import com.example.demo.core.profile.entity.ProfileEntity;
 import com.example.demo.core.user.entity.UserEntity;
 import com.example.demo.utils.base.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "order_entity")
 public class OrderEntity extends BaseEntity {
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @Column(name = "user_id")
+    private UUID userId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
     private UserEntity user;
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItemEntity> products = new ArrayList<>();
 
     @Column(name = "payment_method")

@@ -11,6 +11,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -20,11 +21,14 @@ import java.util.List;
 @Table(name = "cart_entity")
 public class CartEntity extends BaseEntity {
 
-    @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @Column(name = "user_id")
+    private UUID userId;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
     private UserEntity user;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)// cart_id
     private List<ProductInCartEntity> productsInCart = new ArrayList<>();
 
     @Column(name = "discount")

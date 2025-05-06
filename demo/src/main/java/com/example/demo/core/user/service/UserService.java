@@ -27,7 +27,7 @@ public class UserService {
     public UserService(UserRepository userRepository, ProfileRepository profileRepository, CartRepository cartRepository) {
         this._userRepository = userRepository;
         this._profileRepository = profileRepository;
-        _cartRepository = cartRepository;
+        this._cartRepository = cartRepository;
     }
 
 //    public FullUserProjection SignIn(SignInDTO data) {
@@ -68,7 +68,7 @@ public class UserService {
         );
 
         // создание корзины пользователя
-        this._cartRepository.save(new CartEntity(user, new ArrayList<>(), 0));
+        this._cartRepository.save(new CartEntity(user.getId(), user, new ArrayList<>(), 0));
 
         return user;
     }

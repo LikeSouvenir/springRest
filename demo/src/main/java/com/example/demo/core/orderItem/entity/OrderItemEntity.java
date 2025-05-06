@@ -1,7 +1,7 @@
 package com.example.demo.core.orderItem.entity;
 
+import com.example.demo.core.contractor.entity.ContractorEntity;
 import com.example.demo.core.product.entity.ProductEntity;
-import com.example.demo.core.productsInMarket.entity.ProductsInMarketEntity;
 import com.example.demo.core.order.entity.OrderEntity;
 import com.example.demo.utils.base.BaseEntity;
 import jakarta.persistence.*;
@@ -9,6 +9,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,22 +21,19 @@ import lombok.Setter;
 @Table(name = "order_items_entity")
 public class OrderItemEntity extends BaseEntity {
     @ManyToOne
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
     private OrderEntity order;
 
-    @OneToOne(cascade = {CascadeType.ALL, CascadeType.MERGE}, fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
     private ProductEntity product;
 
-    @Column(name = "count_in_order")
-    private int countInOrder;
+    @Column(name = "request_count")
+    private int requestCount;
 
     @Column(name = "product_price")
     private double productPrice;
 
-    @PrePersist
-    protected void onCreate() {
-        this.countInOrder = this.ProductEntity.getCurrentCount();
-        this.productPrice = this.ProductEntity.getCurrentCost();
-    }
+    @OneToMany(mappedBy = "orderItem", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ContractorEntity> contractor = new ArrayList<>();
 }

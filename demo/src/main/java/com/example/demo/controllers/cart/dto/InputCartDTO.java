@@ -10,10 +10,11 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class CartDTO {
+public class InputCartDTO {
     private UUID userId;
     private UUID productId;
     private int count;
+    private String status;
 
     public boolean Validate() {
         if (userId == null) {

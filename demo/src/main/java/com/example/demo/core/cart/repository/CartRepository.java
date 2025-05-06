@@ -2,7 +2,9 @@ package com.example.demo.core.cart.repository;
 
 import com.example.demo.controllers.product.dto.ProductList;
 import com.example.demo.core.cart.entity.CartEntity;
+import com.example.demo.core.productInCart.entity.ProductInCartEntity;
 import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -30,15 +32,10 @@ public interface CartRepository extends JpaRepository<CartEntity, UUID> {
             join pim.product p
             where ce.user.id = :userId
             """)
-    List<ProductList> findByUserId(UUID userId);
+    List<ProductList> findListByUserId(UUID userId);
 
-    @Transactional
-    @Query(value = """
-        select be from CartEntity be
-            left join fetch be.productsInCart
-            where be.user.id = :userId
-        """)
-    Optional<CartEntity> findEntityByUserId(UUID userId);
+
+    Optional<CartEntity> findByUserId(UUID userId);
 
     @Modifying
     @Transactional
