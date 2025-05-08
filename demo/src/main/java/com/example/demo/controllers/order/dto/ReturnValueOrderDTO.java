@@ -1,25 +1,22 @@
 package com.example.demo.controllers.order.dto;
 
-import com.example.demo.controllers.product.dto.ProductList;
-import com.example.demo.core.profile.entity.ProfileEntity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ReturnValueOrderDTO {
 
-    private ProfileEntity profile;
-    private List<ProductList> products = new ArrayList<>();
+    private UUID userId;
+    private List<OrderItemDTO> products = new ArrayList<>();
     private String paymentMethod;
-    private String status;
+    private String orderStatus;
     private double cost;
     private int count;
 }

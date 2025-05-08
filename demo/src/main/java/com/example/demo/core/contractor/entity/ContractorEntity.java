@@ -1,6 +1,7 @@
 package com.example.demo.core.contractor.entity;
 
 
+import com.example.demo.controllers.order.dto.ContractorsDTO;
 import com.example.demo.core.market.entity.MarketEntity;
 import com.example.demo.core.orderItem.entity.OrderItemEntity;
 import com.example.demo.utils.base.BaseEntity;
@@ -34,4 +35,8 @@ public class ContractorEntity extends BaseEntity {
 
     @Column(name = "status")
     private String status = "В обработке";
+
+    public ContractorsDTO toDTO() {
+        return new ContractorsDTO(this.getMarket().toDTO(), this.amountCount, this.amountPrice, this.getStatus());
+    }
 }

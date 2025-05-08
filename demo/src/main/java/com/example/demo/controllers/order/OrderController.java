@@ -1,6 +1,7 @@
 package com.example.demo.controllers.order;
 
 import com.example.demo.controllers.order.dto.OrderDTO;
+import com.example.demo.controllers.order.dto.ReturnValueOrderDTO;
 import com.example.demo.core.productsInMarket.entity.ProductsInMarketEntity;
 import com.example.demo.core.order.entity.OrderEntity;
 import com.example.demo.core.order.service.OrderService;
@@ -16,9 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -43,32 +42,28 @@ public class OrderController {
         }
 
         OrderEntity order = this.orderService.createOrder(newOrder);
-//
-//        System.out.println("Order created: " + order.toString());
-//        order.setUser(null);
         return ResponseEntity.ok().body(null);
     }
 
 
-    //
     @GetMapping("/order/get")
-    public void getOrder(@RequestParam UUID orderId) {
+    public ReturnValueOrderDTO getOrder(@RequestParam UUID orderId) {
 
-        // валидация
-        OrderEntity order = this.orderService.getOrderById(orderId);
+        return this.orderService.getOrderById(orderId);
     }
 
-    public void getUserOrder(UUID userId) {
-
-        // валидация
-        List<OrderEntity> orders = this.orderService.getUserOrders(userId);
-
+    @PatchMapping("order/update")
+    public int updateOrderStatus(@RequestParam UUID orderId, @RequestParam String status) {
+        return this.orderService.updateOrderStatus(orderId, status);
     }
 
-    public void changeStatus(UUID orderId, String status) {
+    @GetMapping("order/getIds")
+    public List<UUID> getUserOrdersIDs(@RequestParam UUID userId) {
+        return this.orderService.getUserOrdersIDs(userId);
+    }
 
-        // валидация
-        OrderEntity order = this.orderService.updateOrder(orderId);
-
+    @GetMapping("order/getUserOrders")
+    public List<ReturnValueOrderDTO> getUserOrders(@RequestParam UUID userId) {
+        return this.orderService.getUserOrders(userId);
     }
 }

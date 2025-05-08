@@ -1,37 +1,46 @@
 package com.example.demo.core.order.service;
 
 import com.example.demo.controllers.order.dto.OrderDTO;
+import com.example.demo.controllers.order.dto.OrderItemDTO;
+import com.example.demo.controllers.order.dto.ReturnValueOrderDTO;
+import com.example.demo.controllers.product.dto.ProductDTO;
 import com.example.demo.core.cart.entity.CartEntity;
 import com.example.demo.core.cart.repository.CartRepository;
 import com.example.demo.core.contractor.entity.ContractorEntity;
 import com.example.demo.core.order.entity.OrderEntity;
 import com.example.demo.core.order.repository.OrderRepository;
 import com.example.demo.core.orderItem.entity.OrderItemEntity;
+import com.example.demo.core.orderItem.repository.OrderItemRepository;
 import com.example.demo.core.productInCart.entity.ProductInCartEntity;
 import com.example.demo.core.productsInMarket.entity.ProductsInMarketEntity;
 import com.example.demo.core.productsInMarket.repository.ProductsInMarketRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
     private final OrderRepository _orderRepository;
     private final CartRepository _cartRepository;
     private final ProductsInMarketRepository _productsInMarketRepository;
+    private final OrderItemRepository _orderItemRepository;
 
 
     public OrderService(OrderRepository orderRepository,
                         CartRepository cartRepository,
-                        ProductsInMarketRepository productsInMarketRepository) {
+                        ProductsInMarketRepository productsInMarketRepository,
+                        OrderItemRepository orderItemRepository) {
         this._orderRepository = orderRepository;
         this._cartRepository = cartRepository;
         this._productsInMarketRepository = productsInMarketRepository;
+        this._orderItemRepository = orderItemRepository;
     }
 
     // OrderRepository //// OrderRepository //// OrderRepository //
@@ -121,16 +130,40 @@ public class OrderService {
     }
 
     // вместе с продукцией
-    public OrderEntity getOrderById(UUID orderId) {
-        return null;
+    @Transactional
+    public ReturnValueOrderDTO getOrderById(UUID orderId) {
+
+        Optional<OrderEntity> order = _orderRepository.findById(orderId);
+        if (order.isEmpty()) {
+            return null;
+        }
+
+        return order.get().toDTO();
     }
 
-    public OrderEntity updateOrderStatus(UUID orderId) {
-        return null;
+    @Transactional
+    public int updateOrderStatus(UUID orderId, String status) {
+        return _orderRepository.updateOrderStatus(orderId, status);
     }
 
-    public List<OrderEntity> getUserOrders(UUID userId) {
-        return null;
+
+    public List<UUID> getUserOrdersIDs(UUID userId) {
+        List<UUID> orders = _orderRepository.findIdsByUserId(userId);
+        if (orders.isEmpty()) {
+            return null;
+        }
+
+        return orders;
+    }
+
+    @Transactional
+    public List<ReturnValueOrderDTO> getUserOrders(UUID userId) {
+        List<OrderEntity> order = _orderRepository.findAllByUserId(userId);
+        if (order.isEmpty()) {
+            return null;
+        }
+
+        return order.stream().map(OrderEntity::toDTO).collect(Collectors.toList());
     }
 
 }

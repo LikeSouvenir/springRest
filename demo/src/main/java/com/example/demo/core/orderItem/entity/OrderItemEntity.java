@@ -1,5 +1,7 @@
 package com.example.demo.core.orderItem.entity;
 
+import com.example.demo.controllers.order.dto.OrderItemDTO;
+import com.example.demo.controllers.product.dto.ProductDTO;
 import com.example.demo.core.contractor.entity.ContractorEntity;
 import com.example.demo.core.product.entity.ProductEntity;
 import com.example.demo.core.order.entity.OrderEntity;
@@ -12,6 +14,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -36,4 +39,14 @@ public class OrderItemEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "orderItem", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ContractorEntity> contractor = new ArrayList<>();
+
+    //mapping
+    public OrderItemDTO toDTO() {
+        return OrderItemDTO.builder()
+                .requestCount(requestCount)
+                .productPrice(productPrice)
+                .contractor(contractor.stream().map(ContractorEntity::toDTO).collect(Collectors.toList()))
+                .product(product.toDTO())
+                .build();
+    }
 }

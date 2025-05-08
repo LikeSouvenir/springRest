@@ -1,5 +1,6 @@
 package com.example.demo.core.market.entity;
 
+import com.example.demo.controllers.market.dto.MarketDTO;
 import com.example.demo.utils.base.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,4 +26,8 @@ public class MarketEntity extends BaseEntity {
 
     @Column(name = "address")
     private String address;
+
+    public MarketDTO toDTO() {
+        return new MarketDTO(this.name, this.owner, this.address);
+    }
 }
