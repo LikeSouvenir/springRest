@@ -1,5 +1,6 @@
 package com.example.demo.core.order.service;
 
+import com.example.demo.controllers.market.MarketController;
 import com.example.demo.controllers.order.dto.OrderDTO;
 import com.example.demo.controllers.order.dto.OrderItemDTO;
 import com.example.demo.controllers.order.dto.ReturnValueOrderDTO;
@@ -14,7 +15,11 @@ import com.example.demo.core.orderItem.repository.OrderItemRepository;
 import com.example.demo.core.productInCart.entity.ProductInCartEntity;
 import com.example.demo.core.productsInMarket.entity.ProductsInMarketEntity;
 import com.example.demo.core.productsInMarket.repository.ProductsInMarketRepository;
+import com.example.demo.utils.exceptions.DataNotFoundException;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,29 +32,28 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
+    private final Logger logger = LoggerFactory.getLogger(OrderService.class);
+
     private final OrderRepository _orderRepository;
     private final CartRepository _cartRepository;
     private final ProductsInMarketRepository _productsInMarketRepository;
-    private final OrderItemRepository _orderItemRepository;
 
 
     public OrderService(OrderRepository orderRepository,
                         CartRepository cartRepository,
-                        ProductsInMarketRepository productsInMarketRepository,
-                        OrderItemRepository orderItemRepository) {
+                        ProductsInMarketRepository productsInMarketRepository) {
         this._orderRepository = orderRepository;
         this._cartRepository = cartRepository;
         this._productsInMarketRepository = productsInMarketRepository;
-        this._orderItemRepository = orderItemRepository;
     }
 
-    // OrderRepository //// OrderRepository //// OrderRepository //
 //    @Modifying
-    public OrderEntity createOrder(OrderDTO newOrder) {
+    public Boolean createOrder(OrderDTO newOrder) {
+        logger.info("Creating new order");
         // подтягиваем корзину
         Optional<CartEntity> cart = this._cartRepository.findByUserId(newOrder.getUserId());
         if (cart.isEmpty()) {
-            return null;
+            throw new DataNotFoundException(HttpStatus.NO_CONTENT, "Cart not found");
         }
         // выбраные товары
         List<ProductInCartEntity> productInCart = cart.get().getProductsInCart();
@@ -111,7 +115,6 @@ public class OrderService {
             totalPrice += costProduct;
             orderItems.add(orderItem);
 
-            System.out.println("item добавлен");
         }
 
         order.setUserId(newOrder.getUserId());
@@ -121,12 +124,11 @@ public class OrderService {
         order.setTotalCount(productInCart.size());
         order.setTotalCost(totalPrice);
 
-        System.out.println("Order создан");
         // удаляем товары из корзины - зануляем у магазина
 //        this.CartService.removeFromcart(orderDTO.getUserId());
 //        System.out.println("orderEntity: removeProductInOrder");
-
-        return _orderRepository.save(order);
+        _orderRepository.save(order);
+        return true;
     }
 
     // вместе с продукцией
@@ -134,8 +136,9 @@ public class OrderService {
     public ReturnValueOrderDTO getOrderById(UUID orderId) {
 
         Optional<OrderEntity> order = _orderRepository.findById(orderId);
+        logger.info("Retrieving order by id");
         if (order.isEmpty()) {
-            return null;
+            throw new DataNotFoundException(HttpStatus.NO_CONTENT, "Order not found");
         }
 
         return order.get().toDTO();
@@ -143,14 +146,16 @@ public class OrderService {
 
     @Transactional
     public int updateOrderStatus(UUID orderId, String status) {
+        logger.info("Updating order status");
         return _orderRepository.updateOrderStatus(orderId, status);
     }
 
 
     public List<UUID> getUserOrdersIDs(UUID userId) {
+        logger.info("Retrieving user orders IDs");
         List<UUID> orders = _orderRepository.findIdsByUserId(userId);
         if (orders.isEmpty()) {
-            return null;
+            throw new DataNotFoundException(HttpStatus.NO_CONTENT, "Orders ids not found, or bad userId: " + userId);
         }
 
         return orders;
@@ -158,9 +163,10 @@ public class OrderService {
 
     @Transactional
     public List<ReturnValueOrderDTO> getUserOrders(UUID userId) {
+        logger.info("Retrieving user orders");
         List<OrderEntity> order = _orderRepository.findAllByUserId(userId);
         if (order.isEmpty()) {
-            return null;
+            throw new DataNotFoundException(HttpStatus.NO_CONTENT, "Orders ids not found, or bad userId: " + userId);
         }
 
         return order.stream().map(OrderEntity::toDTO).collect(Collectors.toList());

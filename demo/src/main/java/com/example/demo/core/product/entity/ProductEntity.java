@@ -1,6 +1,7 @@
 package com.example.demo.core.product.entity;
 
 import com.example.demo.controllers.product.dto.ProductDTO;
+import com.example.demo.controllers.product.dto.ProductinOrderDTO;
 import com.example.demo.utils.base.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,7 +27,7 @@ public class ProductEntity extends BaseEntity {
     @Column(name = "category", nullable = false)// enum
     private String category;
 
-    public ProductDTO toDTO() {
-        return new ProductDTO(this.articleInRegistry, this.name, this.category);
+    public ProductinOrderDTO toDTO() {
+        return new ProductinOrderDTO(this.articleInRegistry, this.name, this.category);
     }
 }

@@ -9,6 +9,7 @@ public class ProductDTO {
     private String articleInRegistry;
     private String name;
     private String category;
+    private String returnStatus;
 
     public boolean Validate() {
         if (this.getArticleInRegistry() == null || this.getArticleInRegistry().isEmpty()) {

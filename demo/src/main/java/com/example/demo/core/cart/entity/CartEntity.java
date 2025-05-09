@@ -21,7 +21,7 @@ import java.util.UUID;
 @Table(name = "cart_entity")
 public class CartEntity extends BaseEntity {
 
-    @Column(name = "user_id")
+    @Column(name = "user_id", unique = true, nullable = false)
     private UUID userId;
 
     @OneToOne(fetch = FetchType.LAZY)

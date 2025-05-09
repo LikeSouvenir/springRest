@@ -1,6 +1,6 @@
 package com.example.demo.core.product.service;
 
-import com.example.demo.controllers.product.dto.ProductDTO;
+import com.example.demo.controllers.product.dto.ProductinOrderDTO;
 import com.example.demo.core.product.entity.ProductEntity;
 import com.example.demo.core.product.repository.ProductRepository;
 import jakarta.transaction.Transactional;
@@ -20,7 +20,7 @@ public class ProductService {
     }
 
     //найти товары
-    public List<ProductDTO> findAllProducts() {
+    public List<ProductinOrderDTO> findAllProducts() {
         return productRepository.findAllProducts();
     }
 

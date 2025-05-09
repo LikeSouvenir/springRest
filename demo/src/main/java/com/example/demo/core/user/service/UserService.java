@@ -30,21 +30,8 @@ public class UserService {
         this._cartRepository = cartRepository;
     }
 
-//    public FullUserProjection SignIn(SignInDTO data) {
-//        FullUserProjection entity = this._userRepository.findByLogin(data.getLogin());
-//
-//        if (entity == null) {
-//            return null;
-//        }
-//
-//        if (!BCrypt.checkpw(data.getPassword(), entity.getPassword())) {
-//            return null;
-//        }
-//
-//        return entity;
-//    }
-
     public UserEntity SignIn(SignInDTO data) {
+//        FullUserProjection entity = this._userRepository.findByLogin(data.getLogin());
         Optional<UserEntity> entity = this._userRepository.findByLogin(data.getLogin());
 
         if (entity.isEmpty()) {
@@ -79,15 +66,4 @@ public class UserService {
     public Optional<UserEntity> findUserById(UUID userId) {
         return this._userRepository.findById(userId);
     }
-
-    // exclude other field //// exclude other field //// exclude other field //// exclude other field //
-//    private HashMap<String, Object> _excludeSystemFields(UserEntity user) {
-//        HashMap<String, Object> value = new HashMap<>();
-//        value.put("login", user.getLogin());
-//        value.put("profile_id", user.getId());
-//        value.put("name", user.getProfile().getName());
-//        value.put("age", user.getProfile().getAge());
-//
-//        return value;
-//    }
 }
